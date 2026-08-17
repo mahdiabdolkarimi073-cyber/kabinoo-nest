@@ -32,8 +32,8 @@ export default class UserOrderHandler extends RequestHandler {
         products: ({
             product: {
                 name: string;
-                id: string;
                 description: string;
+                id: string;
                 created_at: Date;
                 price: number;
                 updated_at: Date;
