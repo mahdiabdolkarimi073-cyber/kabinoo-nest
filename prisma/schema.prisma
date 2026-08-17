@@ -1,0 +1,376 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(uuid())
+  token          String           @unique @default(dbgenerated("concat(gen_random_uuid(), '::', gen_random_uuid(), '::', gen_random_uuid())"))
+  password       String
+  name           String
+  nationalCode   String?
+  phone          String           @unique
+  email          String?
+  joined_at      DateTime         @default(now())
+  isAdmin        Boolean          @default(false)
+  refCode        String           @unique @default(cuid())
+  refId          String?
+  addresses      Address[]
+  cartItems      CartItem[]
+  designs        CustomDesign[]
+  designRequests DesignRequest[]
+  offCodes       OffCode[]
+  orders         Order[]
+  Payment        Payment[]
+  comments       ProductComment[]
+  tickets        Ticket[]
+  ticketMessages TicketMessage[]
+  ref            User?            @relation("self", fields: [refId], references: [refCode])
+  users          User[]           @relation("self")
+  advices        UserAdvice[]
+  chat           UserChat?
+}
+
+model ProductColor {
+  id       Int       @id @default(autoincrement())
+  name     String
+  hex      String?
+  src      String?
+  products Product[]
+}
+
+model ProductMaterial {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
+
+model ProductDetail {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String
+  slug     String    @unique
+  image    String?
+  products Product[]
+}
+
+model Product {
+  id           String           @id @default(uuid())
+  name         String
+  created_at   DateTime         @default(now())
+  updated_at   DateTime         @default(now()) @updatedAt
+  x            Int
+  y            Int
+  z            Int
+  price        Float
+  offPercent   Int              @default(0)
+  colorId      Int
+  description  String           @default("")
+  rating       Int?
+  images       String[]         @default([])
+  others       Json             @default("{}")
+  deliveryDays Int              @default(5)
+  materialId   Int
+  detailId     Int
+  categoryId   String
+  designId     String?
+  inCart       CartItem[]
+  orders       OrderProduct[]
+  portfolio    Portfolio[]
+  category     Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  color        ProductColor     @relation(fields: [colorId], references: [id], onDelete: Cascade)
+  design       CustomDesign?    @relation(fields: [designId], references: [id])
+  detail       ProductDetail    @relation(fields: [detailId], references: [id], onDelete: Cascade)
+  material     ProductMaterial  @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  comments     ProductComment[]
+}
+
+model ProductComment {
+  id         String   @id @default(cuid())
+  content    String   @db.VarChar(200)
+  rate       Int      @default(3)
+  accepted   Boolean  @default(false)
+  created_at DateTime @default(now())
+  author     String
+  userId     String?
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PortfolioCategory {
+  id         String              @id @default(cuid())
+  name       String
+  parentId   String?
+  portfolios Portfolio[]
+  parent     PortfolioCategory?  @relation("self", fields: [parentId], references: [id], onDelete: Cascade)
+  children   PortfolioCategory[] @relation("self")
+}
+
+model Portfolio {
+  id         String            @id @default(cuid())
+  created_at DateTime          @default(now())
+  image      String
+  productId  String?
+  categoryId String
+  name       String
+  category   PortfolioCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  product    Product?          @relation(fields: [productId], references: [id])
+}
+
+model Order {
+  id            String             @id @default(uuid())
+  created_at    DateTime           @default(now())
+  userId        String
+  totalPrice    Float
+  finalPrice    Float
+  status        OrderStatus        @default(PAYMENT)
+  code          Int                @default(autoincrement())
+  offCodeId     String?
+  addressId     String?
+  paymentId     String?
+  paymentMethod OrderPaymentMethod @default(UNKNOWN)
+  statusReason  String?
+  address       Address?           @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  offCode       OffCode?           @relation(fields: [offCodeId], references: [id])
+  payment       Payment?           @relation(fields: [paymentId], references: [id])
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products      OrderProduct[]
+  checks        PaymentCheck[]
+}
+
+model OrderProduct {
+  id             Int           @id @default(autoincrement())
+  orderId        String
+  productId      String?
+  customDesignId String?
+  custom         CustomDesign? @relation(fields: [customDesignId], references: [id], onDelete: Cascade)
+  order          Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product        Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model OffCode {
+  id       String  @id @default(cuid())
+  userId   String?
+  percent  Int
+  used     Int     @default(0)
+  maxUsage Int?
+  user     User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders   Order[]
+}
+
+model Address {
+  id       String  @id @default(cuid())
+  userId   String
+  address  String
+  receiver String
+  state    String
+  city     String
+  phone    String
+  phone2   String?
+  postal   String?
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Order    Order[]
+}
+
+model Variable {
+  key   VariableKey @id
+  value Int         @default(0)
+}
+
+model CartItem {
+  id             String        @id @default(cuid())
+  productId      String?
+  customDesignId String?
+  userId         String
+  custom         CustomDesign? @relation(fields: [customDesignId], references: [id], onDelete: Cascade)
+  product        Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, userId])
+  @@unique([customDesignId, userId])
+}
+
+model CustomDesign {
+  id         String         @id @default(uuid())
+  created_at DateTime       @default(now())
+  slug       String
+  price      Float
+  image      String
+  name       String
+  data       Json           @default("{}")
+  userId     String
+  inCarts    CartItem[]
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  inOrders   OrderProduct[]
+  Product    Product[]
+}
+
+model DesignRequest {
+  id          String     @id @default(uuid())
+  title       String
+  created_at  DateTime   @default(now())
+  userId      String
+  status      String     @default("درحال بررسی")
+  files       String[]   @default([])
+  type        DesignType @default(PRICE)
+  description String     @default("")
+  answer      String     @default("پاسخی ثبت نشده")
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Ticket {
+  id         String          @id @default(uuid())
+  created_at DateTime        @default(now())
+  updated_at DateTime        @default(now()) @updatedAt
+  title      String
+  status     TicketStatus    @default(OPEN)
+  userId     String
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages   TicketMessage[]
+}
+
+model TicketMessage {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+  content    String
+  ticketId   String
+  userId     String
+  isAdmin    Boolean  @default(false)
+  ticket     Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserChat {
+  id         String            @id @default(cuid())
+  userId     String            @unique
+  answered   Boolean           @default(false)
+  lastMsg    String?
+  created_at DateTime          @default(now())
+  updated_at DateTime          @default(now()) @updatedAt
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages   UserChatMessage[]
+}
+
+model UserChatMessage {
+  id         String   @id @default(cuid())
+  chatId     String
+  content    String
+  created_at DateTime @default(now())
+  isAdmin    Boolean  @default(false)
+  chat       UserChat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+}
+
+model UserAdvice {
+  id         String   @id @default(cuid())
+  userId     String?
+  created_at DateTime @default(now())
+  phone      String   @unique
+  name       String
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id         String          @id @default(dbgenerated("concat('pay_', gen_random_uuid())"))
+  userId     String
+  created_at DateTime        @default(now())
+  redirect   String          @default("/user/order")
+  data       Json?
+  paid_at    DateTime?
+  price      Float
+  token      String?         @unique
+  orders     Order[]
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  actions    PaymentAction[]
+}
+
+model PaymentAction {
+  id        Int     @id @default(autoincrement())
+  paymentId String
+  model     String
+  method    String
+  query     Json
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+}
+
+model PaymentCheck {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  start_at   DateTime
+  expire_at  DateTime
+  amount     Float
+  checkId    String
+  image      String
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+enum OrderPaymentMethod {
+  UNKNOWN
+  DIRECT
+  INSTALLMENT
+}
+
+enum OrderStatus {
+  /// @name درانتظار پرداخت
+  PAYMENT
+  /// @name درحال آماده سازی
+  PENDING
+  /// @name لغو شده
+  CANCELED
+  /// @name تکمیل شده
+  COMPLETED
+  /// @name تعلیق
+  PAUSED
+  /// @name بررسی پرداخت
+  PAY_CHECK
+  /// @name ارسال شده
+  SENT
+}
+
+enum VariableKey {
+  /// @name درصد مالیات درگاه پرداخت
+  PAY_FEE
+  /// @name درصد مالیات اقساط
+  VAM_FEE
+  /// @name حداکثر ماه بدون مالیات
+  VAM_NOFEE_MONTH
+  /// @name حداکثر تعداد چک
+  MAX_VAM_CH_COUNT
+  /// @name تعداد ماه هر چک
+  VAM_CH_MONTH
+}
+
+enum DesignType {
+  /// @name قیمت بده
+  PRICE
+  /// @name مدل سه بعدی
+  MODEL
+}
+
+model CalcPriceSetting {
+  id              Int      @id @default(1)
+  mdfPrice        Float    @default(1500000)
+  highglassPrice  Float    @default(2800000)
+  vacuumPrice     Float    @default(3600000)
+  colorPrice      Float    @default(5500000)
+  fridgeCost      Float    @default(2000000)
+  dishwasherCost  Float    @default(1500000)
+  laundryCost     Float    @default(1500000)
+  updatedAt      DateTime @updatedAt
+}
+
+enum TicketStatus {
+  OPEN
+  ANSWERED
+  CLOSED
+}
