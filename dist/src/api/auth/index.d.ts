@@ -1,4 +1,4 @@
-import RequestHandler from '@/core/request.handler';
+import RequestHandler from "../../core/request.handler";
 import { WebSocket } from 'ws';
 export default class LoginHandler extends RequestHandler {
     static attempts: Record<string, {

@@ -1,4 +1,4 @@
-import RequestHandler from '@/core/request.handler';
+import RequestHandler from "../../core/request.handler";
 export default class PhoneVerification extends RequestHandler {
     private static readonly MAX_ATTEMPTS;
     private static readonly CODE_EXPIRY_MINUTES;

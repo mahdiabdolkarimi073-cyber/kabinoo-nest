@@ -1,4 +1,4 @@
-import PrismaLimitHandler from "@/core/prisma.limited.handler";
+import PrismaLimitHandler from "../../core/prisma.limited.handler";
 export default class DesignRequestHandler extends PrismaLimitHandler {
     additionalPayload(): Promise<Record<any, any>>;
     getModel(): import("@prisma/client/runtime/library").DynamicModelExtensionThis<import(".prisma/client").Prisma.TypeMap<import("@prisma/client/runtime/library").InternalArgs & {

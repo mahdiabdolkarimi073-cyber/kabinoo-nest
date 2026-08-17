@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { Throw } from '@/utils/built-in';
-import { $_POSTObject, $_POSTType } from '@/utils/request';
-import { PrismaType } from '@/core/db';
+import { Throw } from "../utils/built-in";
+import { $_POSTObject, $_POSTType } from "../utils/request";
+import { PrismaType } from "./db";
 import { WebSocket } from 'ws';
 export default class RequestHandler {
     #private;

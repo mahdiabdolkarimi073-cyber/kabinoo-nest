@@ -1,4 +1,4 @@
-import RequestHandler from "@/core/request.handler";
+import RequestHandler from "../../core/request.handler";
 export default class DesignHandler extends RequestHandler {
     GET(): Promise<Record<import(".prisma/client").$Enums.VariableKey, number>>;
 }

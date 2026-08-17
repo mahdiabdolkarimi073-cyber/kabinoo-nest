@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import { Request, Response } from 'express';
-import PrismaFullHandler from '@/core/prisma.handler';
+import PrismaFullHandler from "../../core/prisma.handler";
 export default class UserHandler extends PrismaFullHandler {
     static onMount(): void;
     GET(): Promise<{

@@ -1,4 +1,4 @@
-import PrismaFullHandler from "@/core/prisma.handler";
+import PrismaFullHandler from "../../core/prisma.handler";
 export default class DesignHandler extends PrismaFullHandler {
     additionalPayload(): Promise<Record<any, any>>;
     getModel(): import("@prisma/client/runtime/library").DynamicModelExtensionThis<import(".prisma/client").Prisma.TypeMap<import("@prisma/client/runtime/library").InternalArgs & {

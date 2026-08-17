@@ -1,5 +1,5 @@
-import { PrismaType } from "@/core/db";
-import PrismaFullHandler from "@/core/prisma.handler";
+import { PrismaType } from "../../core/db";
+import PrismaFullHandler from "../../core/prisma.handler";
 export default class AdminOffCodesHandler extends PrismaFullHandler {
     getModel(): import("@prisma/client/runtime/library").DynamicModelExtensionThis<import(".prisma/client").Prisma.TypeMap<import("@prisma/client/runtime/library").InternalArgs & {
         result: {

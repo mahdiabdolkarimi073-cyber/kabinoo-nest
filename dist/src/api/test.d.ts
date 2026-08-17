@@ -1,4 +1,4 @@
-import RequestHandler from '@/core/request.handler';
+import RequestHandler from "../core/request.handler";
 export default class Test extends RequestHandler {
     GET(): Promise<{
         redirect: string;

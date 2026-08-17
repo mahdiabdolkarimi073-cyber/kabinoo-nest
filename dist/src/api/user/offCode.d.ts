@@ -1,4 +1,4 @@
-import RequestHandler from "@/core/request.handler";
+import RequestHandler from "../../core/request.handler";
 export default class OffCodeHandler extends RequestHandler {
     GET(): Promise<{
         id: string;

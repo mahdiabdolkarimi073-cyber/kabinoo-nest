@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import RequestHandler from '@/core/request.handler';
+import RequestHandler from "../../core/request.handler";
 export default class UserUpload extends RequestHandler {
     test(body: any, res: Response): Promise<void>;
 }

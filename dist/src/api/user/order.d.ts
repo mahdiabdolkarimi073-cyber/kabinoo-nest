@@ -1,4 +1,4 @@
-import RequestHandler from "@/core/request.handler";
+import RequestHandler from "../../core/request.handler";
 export default class UserOrderHandler extends RequestHandler {
     GET(): Promise<({
         address: {
@@ -32,8 +32,8 @@ export default class UserOrderHandler extends RequestHandler {
         products: ({
             product: {
                 name: string;
-                description: string;
                 id: string;
+                description: string;
                 created_at: Date;
                 price: number;
                 updated_at: Date;

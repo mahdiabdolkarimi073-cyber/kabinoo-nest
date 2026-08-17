@@ -1,4 +1,4 @@
-import PrismaFullHandler from "@/core/prisma.handler";
+import PrismaFullHandler from "../../../core/prisma.handler";
 export default class AdminOffCodesHandler extends PrismaFullHandler {
     additionalPayload(): Promise<{
         isAdmin: boolean;
