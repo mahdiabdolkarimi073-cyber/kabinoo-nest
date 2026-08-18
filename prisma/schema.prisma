@@ -366,6 +366,12 @@ model CalcPriceSetting {
   fridgeCost      Float    @default(2000000)
   dishwasherCost  Float    @default(1500000)
   laundryCost     Float    @default(1500000)
+  wallCabinetCost     Float    @default(1800000)
+  wallCabinetSteppedCost Float @default(2500000)
+  hoodCost        Float    @default(1200000)
+  hoodHiddenCost  Float    @default(2000000)
+  ovenCost        Float    @default(1300000)
+  ovenBuiltInCost Float    @default(2200000)
   updatedAt      DateTime @updatedAt
 }
 

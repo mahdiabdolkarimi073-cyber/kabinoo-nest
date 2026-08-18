@@ -24,6 +24,12 @@ export default class CalcPriceHandler extends RequestHandler {
             fridgeCost: Number(this.json.fridgeCost),
             dishwasherCost: Number(this.json.dishwasherCost),
             laundryCost: Number(this.json.laundryCost),
+            wallCabinetCost: Number(this.json.wallCabinetCost),
+            wallCabinetSteppedCost: Number(this.json.wallCabinetSteppedCost),
+            hoodCost: Number(this.json.hoodCost),
+            hoodHiddenCost: Number(this.json.hoodHiddenCost),
+            ovenCost: Number(this.json.ovenCost),
+            ovenBuiltInCost: Number(this.json.ovenBuiltInCost),
         };
 
         const settings = await prisma.calcPriceSetting.upsert({
