@@ -9,6 +9,12 @@ export default class CalcPriceHandler extends RequestHandler {
         fridgeCost: number;
         dishwasherCost: number;
         laundryCost: number;
+        wallCabinetCost: number;
+        wallCabinetSteppedCost: number;
+        hoodCost: number;
+        hoodHiddenCost: number;
+        ovenCost: number;
+        ovenBuiltInCost: number;
         updatedAt: Date;
     }>;
 }
