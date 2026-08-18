@@ -1,8 +1,6 @@
-import PrismaFullHandler from "../../core/prisma.handler";
-import { WebSocket } from "ws";
-export default class Chat extends PrismaFullHandler {
-    static Connections: Record<string, Record<string, WebSocket>>;
-    static onMount(): void;
+import PrismaLimitHandler from "../../core/prisma.limited.handler";
+import { Request, Response } from "express";
+export default class PublicArticleHandler extends PrismaLimitHandler {
     getModel(): import("@prisma/client/runtime/library").DynamicModelExtensionThis<import(".prisma/client").Prisma.TypeMap<import("@prisma/client/runtime/library").InternalArgs & {
         result: {
             user: {
@@ -41,7 +39,7 @@ export default class Chat extends PrismaFullHandler {
         model: {};
         query: {};
         client: {};
-    }, {}>, "UserChatMessage", {
+    }, {}>, "Article", {
         result: {
             user: {
                 readonly password: () => {
@@ -80,87 +78,9 @@ export default class Chat extends PrismaFullHandler {
         query: {};
         client: {};
     }>;
+    enableQueryInclude(): boolean;
+    enableFullyInclude(): boolean;
     getName(): string;
-    additionalPayload(): Promise<{
-        userId: string;
-        chatId: string;
-        isAdmin: boolean;
-        targetUser: {
-            name: string;
-            id: string;
-            nationalCode: string | null;
-            email: string | null;
-            joined_at: Date;
-            isAdmin: boolean;
-            refCode: string;
-            refId: string | null;
-            isAuthor: boolean;
-            token: () => string;
-            password: () => string;
-            phone: () => string;
-        };
-    }>;
-    getChat(_user?: any): Promise<{
-        user: {
-            name: string;
-            id: string;
-            nationalCode: string | null;
-            email: string | null;
-            joined_at: Date;
-            isAdmin: boolean;
-            refCode: string;
-            refId: string | null;
-            isAuthor: boolean;
-            token: () => string;
-            password: () => string;
-            phone: () => string;
-        };
-        messages: {
-            content: string;
-            id: string;
-            isAdmin: boolean;
-            created_at: Date;
-            chatId: string;
-        }[];
-    } & {
-        id: string;
-        userId: string;
-        created_at: Date;
-        updated_at: Date;
-        answered: boolean;
-        lastMsg: string | null;
-    }>;
-    GET(): Promise<{
-        user: {
-            name: string;
-            id: string;
-            nationalCode: string | null;
-            email: string | null;
-            joined_at: Date;
-            isAdmin: boolean;
-            refCode: string;
-            refId: string | null;
-            isAuthor: boolean;
-            token: () => string;
-            password: () => string;
-            phone: () => string;
-        };
-        messages: {
-            content: string;
-            id: string;
-            isAdmin: boolean;
-            created_at: Date;
-            chatId: string;
-        }[];
-    } & {
-        id: string;
-        userId: string;
-        created_at: Date;
-        updated_at: Date;
-        answered: boolean;
-        lastMsg: string | null;
-    }>;
-    PUT(): Promise<void>;
-    onWebSocket(ws: WebSocket): Promise<void>;
-    enableWebSocket(): boolean;
+    GET_findFirst(id: any): Promise<any>;
+    bySlug(req: Request, res: Response): Promise<any>;
 }

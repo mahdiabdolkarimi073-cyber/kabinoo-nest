@@ -33,6 +33,8 @@ model User {
   users          User[]           @relation("self")
   advices        UserAdvice[]
   chat           UserChat?
+  isAuthor       Boolean          @default(false)
+  articles       Article[]
 }
 
 model ProductColor {
@@ -379,4 +381,21 @@ enum TicketStatus {
   OPEN
   ANSWERED
   CLOSED
+}
+
+/// @name مقاله
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  summary     String
+  content     String
+  keywords    String[] @default([])
+  image       String
+  views       Int      @default(0)
+  readMinutes Int      @default(1)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }

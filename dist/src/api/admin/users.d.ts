@@ -88,6 +88,7 @@ export default class AdminOffCodesHandler extends PrismaFullHandler {
         isAdmin: boolean;
         refCode: string;
         refId: string | null;
+        isAuthor: boolean;
         token: () => string;
         password: () => string;
         phone: () => string;
