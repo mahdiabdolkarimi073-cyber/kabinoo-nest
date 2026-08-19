@@ -11,5 +11,6 @@ export declare const VARS: {
     readonly isDev: boolean;
     readonly BACKEND: string;
     readonly FRONTEND: string;
+    readonly PAYMENT_CALLBACK: string;
     readonly PAYMENT_MID: string;
 };

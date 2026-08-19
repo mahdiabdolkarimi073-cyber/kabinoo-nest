@@ -6,6 +6,11 @@ const config_1 = require("../../api/public/config");
 class IRTPayment {
     static MID = "";
     static async doPayment(payment) {
+        if (global_1.VARS.isDev) {
+            const url = new URL(global_1.VARS.PAYMENT_CALLBACK);
+            url.searchParams.set("id", payment.id);
+            return url.toString();
+        }
         const token = await IRTPayment.getToken(payment.price * 10, payment.id);
         return IRTPayment.getUrl(token);
     }
@@ -19,14 +24,8 @@ class IRTPayment {
         return IRTPayment.getTerminalId();
     }
     static async getToken(amount, paymentId) {
-        const actualCallback = new URL(global_1.VARS.isDev ? "http://localhost:3080" : global_1.VARS.BACKEND);
-        actualCallback.pathname = "/public/payment";
-        actualCallback.searchParams.set("id", paymentId);
-        const callback = new URL(global_1.VARS.FRONTEND || "http://localhost:3000");
-        callback.pathname = "/proxy";
-        callback.search = new URLSearchParams({
-            url: actualCallback.toString()
-        }).toString();
+        const callback = new URL(global_1.VARS.PAYMENT_CALLBACK);
+        callback.searchParams.set("id", paymentId);
         const tid = IRTPayment.getTerminalId();
         const config = await (0, config_1.getVarConfig)();
         const params = {

@@ -28,9 +28,12 @@ function registerGlobal() {
 }
 exports.VARS = {
     isDev: process.env['DEV'] === 'true' || process.env['DEBUG'] === "true",
-    BACKEND: process.env['BACKEND'] || 'http://localhost:3080',
+    BACKEND: process.env['BACKEND'] || 'https://backend.kabinoo.ir',
     get FRONTEND() {
-        return process.env['FRONTEND'] || (this.isDev ? 'http://localhost:3000' : 'https://footpass.ir');
+        return process.env['FRONTEND'] || (this.isDev ? 'http://localhost:3000' : 'https://kabinoo.ir');
+    },
+    get PAYMENT_CALLBACK() {
+        return process.env['PAYMENT_CALLBACK'] || `${this.BACKEND}/public/payment`;
     },
     PAYMENT_MID: process.env['PAYMENT_MID']
 };

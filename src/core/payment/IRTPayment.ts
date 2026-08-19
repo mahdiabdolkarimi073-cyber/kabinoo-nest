@@ -7,6 +7,11 @@ export default class IRTPayment {
 	static MID = "";
 
 	static async doPayment(payment: Payment) {
+		if (VARS.isDev) {
+			const url = new URL(VARS.PAYMENT_CALLBACK);
+			url.searchParams.set("id", payment.id);
+			return url.toString();
+		}
 		const token = await IRTPayment.getToken(payment.price * 10,payment.id);
 		return IRTPayment.getUrl(token);
 	}
@@ -24,15 +29,9 @@ export default class IRTPayment {
 	}
 
 	static async getToken(amount: number, paymentId: string) {
-		const actualCallback = new URL(VARS.isDev ? "http://localhost:3080":VARS.BACKEND);
-		actualCallback.pathname = "/public/payment";
-		actualCallback.searchParams.set("id", paymentId);
+		const callback = new URL(VARS.PAYMENT_CALLBACK);
+		callback.searchParams.set("id", paymentId);
 
-		const callback = new URL(VARS.FRONTEND || "http://localhost:3000");
-		callback.pathname = "/proxy";
-		callback.search = new URLSearchParams({
-			url: actualCallback.toString()
-		}).toString();
 		const tid = IRTPayment.getTerminalId();
 		const config = await getVarConfig();
 		const params = {

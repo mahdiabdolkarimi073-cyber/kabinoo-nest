@@ -116,8 +116,8 @@ export default class Chat extends PrismaFullHandler {
             phone: () => string;
         };
         messages: {
-            content: string;
             id: string;
+            content: string;
             isAdmin: boolean;
             created_at: Date;
             chatId: string;
@@ -146,8 +146,8 @@ export default class Chat extends PrismaFullHandler {
             phone: () => string;
         };
         messages: {
-            content: string;
             id: string;
+            content: string;
             isAdmin: boolean;
             created_at: Date;
             chatId: string;
